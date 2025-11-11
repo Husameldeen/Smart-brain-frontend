@@ -12,17 +12,17 @@ import Particles from './components/Particles/Particles';
 
 const initialState = {
   input: '',
-      imageUrl: '',
-      box: {},
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
 }
 
 class App extends Component {
@@ -76,7 +76,7 @@ class App extends Component {
     this.setState({imageUrl: this.state.input});
     //console.log(this.state.input)
 
-    fetch("http://localhost:3000/api", {
+    fetch("https://smart-brain-backend-phi.vercel.app/api", {
           method: 'post',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
@@ -86,7 +86,7 @@ class App extends Component {
     .then(response => response.json())
     .then(result => {
       if (Object.keys(result.outputs[0].data).length) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://smart-brain-backend-phi.vercel.app/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({

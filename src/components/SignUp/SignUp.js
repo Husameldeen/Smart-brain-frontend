@@ -24,7 +24,7 @@ class SignUp extends Component {
     }
 
     onSubmitSignUp = () => {
-        fetch('http://localhost:3000/signup', {
+        fetch('https://smart-brain-backend-phi.vercel.app/signup', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
