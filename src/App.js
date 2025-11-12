@@ -7,7 +7,7 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
-//import Particles from './components/Particles/Particles';
+import Particles from './components/Particles/Particles';
 
 const initialState = {
   input: '',
@@ -145,7 +145,7 @@ class App extends Component {
             : <SignUp loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
             )
         }
-        {/* <Particles /> */}
+        <Particles />
       </div>
     );
   }  
