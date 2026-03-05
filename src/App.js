@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import { useReducer} from 'react';
 import './App.css';
 import SignIn from './components/SignIn/SignIn';
 import SignUp from './components/SignUp/SignUp';
@@ -24,29 +24,80 @@ const initialState = {
   }
 }
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = initialState
-  }
-
-  loadUser = (data) => {
-    this.setState({
-      user: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        entries: data.entries,
-        joined: data.joined
+function reducer(state, action) {
+  switch(action.type) {
+    case 'loadUser':
+      return {
+        ...state,
+        user: {
+          id: action.payload.id,
+          name: action.payload.name,
+          email: action.payload.email,
+          entries: action.payload.entries,
+          joined: action.payload.joined
+        }
       }
-    })
-    //console.log(this.state.user)
+    case 'signout':
+      return initialState
+    case 'signin':
+      return {
+        ...state,
+        route: action.payload,
+      }
+    case 'home':
+      return {
+        ...state,
+        isSignedIn: true,
+      }
+    case 'setRoute':
+      return {
+        ...state,
+        route: action.payload,
+      }
+    case 'setInput':
+      return {
+        ...state,
+        input: action.payload,
+      }
+    case 'setURL':
+      return {
+        ...state,
+        imageUrl: action.payload,
+      }
+    case 'setEntries':
+      return {
+        ...state,
+        user: {
+          ...state.user, 
+          entries: state.user.entries + 1
+        },
+      }
+    case 'setBox':
+      return {
+        ...state,
+        box: action.payload,
+      }
+    case 'clearBox':
+      return {
+        ...state,
+        box: {},
+      }
+    default : throw new Error('Unkown type')
+  }
+} 
+
+function App() {
+
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const { input, imageUrl, box, route, isSignedIn, user } = state
+  const { id, name, entries } = user
+
+  const loadUser = (data) => {
+    dispatch({type: 'loadUser', payload: data})
   }
 
-
-
-
-  calculateFaceLocation = (data) => {
+  const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
@@ -59,27 +110,20 @@ class App extends Component {
     }
   }
 
-  displayFaceBox = (box) => {
-    this.setState({box: box});
+  const displayFaceBox = (box) => {
+    dispatch({type: 'setBox', payload: box})
+    //this.setState({box: box});
   }
 
-
-
-
-  onInputChange = (event) => {
-    this.setState({input: event.target.value})
-    //console.log(event.target.value)
-  }
-
-  onButtonSubmit = () => {
-    this.setState({imageUrl: this.state.input});
+  const onButtonSubmit = () => {
+    dispatch({type: 'setURL', payload: input})
     //console.log(this.state.input)
 
     fetch("https://smart-brain-backend-phi.vercel.app/api", {
           method: 'post',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
-          imageUrl: this.state.input
+          imageUrl: input
           })
         })
     .then(response => response.json())
@@ -89,66 +133,65 @@ class App extends Component {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-              id: this.state.user.id
+              id: id
             })
           })
           .then(response => response.json())
           .then(count => {
-            this.setState(Object.assign(this.state.user, { entries: Number(this.state.user.entries) + 1}))
+            dispatch({type: 'setEntries'})
           })
 
-          this.displayFaceBox(this.calculateFaceLocation(result))
+          displayFaceBox(calculateFaceLocation(result))
           
         } else {
-          this.setState({box: {}})
+          dispatch({type: 'clearBox'})
         }
     })
     .catch(error => console.error('error', error));
   }
 
-  onRouteChange = (route) => {
+  const onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState(initialState)
+      dispatch({type: 'signout'})
     } else if (route === 'home') {
-      this.setState({isSignedIn: true})
+      dispatch({type: 'home'})
     }
-    this.setState({route: route})
+    dispatch({type: 'setRoute', payload: route})
   }
 
-  render() {
-    return (
-      <div className="App">
-        <div className='header'>
-          <Logo />
-          <Nav 
-            onRouteChange={this.onRouteChange} 
-            isSignedIn={this.state.isSignedIn}
-          />
-        </div>
-        {this.state.route === 'home'
-          ? <div>
-              <Rank 
-                entries={this.state.user.entries} 
-                name={this.state.user.name}
-              />
-              <ImageLinkForm 
-                onInputChange={this.onInputChange} 
-                onButtonSubmit={this.onButtonSubmit}
-              />
-              <FaceRecognition
-              box={this.state.box}
-              imageUrl={this.state.imageUrl}
-              />
-            </div>
-          : (this.state.route === 'signin' 
-            ? <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
-            : <SignUp loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-            )
-        }
-        <Particles />
+
+  return (
+    <div className="App">
+      <div className='header'>
+        <Logo />
+        <Nav 
+          dispatch={dispatch} 
+          isSignedIn={isSignedIn}
+        />
       </div>
-    );
-  }  
+      {route === 'home'
+        ? <div>
+            <Rank 
+              entries={entries} 
+              name={name}
+            />
+            <ImageLinkForm 
+              dispatch={dispatch} 
+              onButtonSubmit={onButtonSubmit}
+            />
+            <FaceRecognition
+            box={box}
+            imageUrl={imageUrl}
+            />
+          </div>
+        : (route === 'signin' 
+          ? <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
+          : <SignUp loadUser={loadUser} onRouteChange={onRouteChange} />
+          )
+      }
+      <Particles />
+    </div>
+  );
 }
 
 export default App;

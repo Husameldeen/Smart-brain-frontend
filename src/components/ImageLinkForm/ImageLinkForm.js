@@ -1,7 +1,6 @@
-import React from 'react';
 import './ImageLinkForm.css'
 
-const ImageLinkForm = ({onInputChange, onButtonSubmit}) => {
+const ImageLinkForm = ({dispatch, onButtonSubmit}) => {
     return (
         <div className='ma4 mt0'>
             <p className='f2'>
@@ -12,7 +11,7 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit}) => {
                     <input 
                     className='f4 pa2 w-70 center' 
                     type='text' 
-                    onChange={onInputChange}
+                    onChange={(e) => dispatch({type: 'setInput', payload: e.target.value})}
                     />
                     <button 
                     className='w-30 grow f4 link ph3 pv2 dib white bg-light-purple'
