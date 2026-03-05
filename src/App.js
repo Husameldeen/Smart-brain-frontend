@@ -93,6 +93,8 @@ function App() {
   const { input, imageUrl, box, route, isSignedIn, user } = state
   const { id, name, entries } = user
 
+  console.log(user)
+
   const loadUser = (data) => {
     dispatch({type: 'loadUser', payload: data})
   }
