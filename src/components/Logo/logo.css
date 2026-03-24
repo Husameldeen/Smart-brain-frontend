@@ -1,0 +1,16 @@
+.logo-container {
+    /* position: fixed; */
+    margin: 2rem;
+    margin-top: 0;
+}
+
+.tilt {
+    width: 150px;
+    height: auto;
+}
+
+.tilt p {
+    font-weight: 600;
+}
+
+/* className='br2 shadow-2 pa3' style={{ 'height': '125px', width: '125px' }} */

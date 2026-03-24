@@ -5,8 +5,8 @@
 
 .form {
   --s: 1px; /* control the size*/
-  --c1: #c76bbb;
-  --c2: #2f2b69;
+  --c1: #42484d;
+  --c2: #000;
   
   --c:#0000 46.46%,var(--c1) 0 53.53%,#0000 0;
   --d:calc(10*var(--s)) calc(10*var(--s));

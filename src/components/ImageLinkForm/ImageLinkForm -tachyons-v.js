@@ -14,7 +14,7 @@ const ImageLinkForm = ({dispatch, onButtonSubmit}) => {
                     onChange={(e) => dispatch({type: 'setInput', payload: e.target.value})}
                     />
                     <button 
-                    className='w-30 grow f4 link ph3 pv2 dib white bg-gray'
+                    className='w-30 grow f4 link ph3 pv2 dib white bg-light-purple'
                     onClick={onButtonSubmit}
                     >Detect</button>
                 </div>
