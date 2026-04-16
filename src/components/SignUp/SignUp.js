@@ -1,15 +1,6 @@
 import { useState } from "react";
 
 function SignUp({ loadUser, onRouteChange }) {
-  // constructor(props) {
-  //     super(props);
-  //     this.state = {
-  //         email: '',
-  //         password: '',
-  //         name: ''
-  //     }
-  // }
-
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -39,7 +30,6 @@ function SignUp({ loadUser, onRouteChange }) {
       .then((res) => res.json())
       .then((user) => {
         if (user.id) {
-          //console.log(user.name)
           loadUser(user);
           onRouteChange("home");
         }
